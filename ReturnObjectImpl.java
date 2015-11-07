@@ -11,33 +11,24 @@ public class ReturnObjectImpl implements ReturnObject {
 	}
 
 	public Object getReturnValue() {
+		if (hasBeenError) {
+			return null;
+		}
 		return returnValue;
 	}
 
 	public ErrorMessage getError() {
+		if (!hasBeenError) {
+			return ErrorMessage.NO_ERROR;
+		}
 		return returnError;
 	}
 		
 	public boolean hasError() {
 		return hasBeenError;
 	}
-		
-	
-
 }
-	
-	
-
-
-	
-		
-
-/**
- * A wrapper containing either an object (the result of an operation
- * on a data structure) or an error value.
- *
- * @author PiJ
- *
+	/**
 *public interface ReturnObject {
 	*
 	 * Returns whether there has been an error

@@ -1,20 +1,23 @@
 public class LinkedList /** implements List */{
 
 	private LinkedListNode head;
+	private static int nodeCount;
 
 	public LinkedList() {
 		head = null;
 	}
 
-	//public ReturnObject add(int index, Object item);
 
-
-	public void add(Object item) {
+	public ReturnObject add(Object item) {
+		if (item == null) {
+			return new ReturnObjectImpl (null, ErrorMessage.INVALID_ARGUMENT, true);
+		}
+		addOneToNodeCount();
 		LinkedListNode newNode = new LinkedListNode(item);
-
 		if (head == null) {
 			head = new LinkedListNode(item);
-			//return;
+			ReturnObject instance1 = new ReturnObjectImpl (null, ErrorMessage.NO_ERROR, false);
+			return instance1;
 		}
 		LinkedListNode currentNode = head;
 		while (currentNode.getNext() != null) {
@@ -22,9 +25,14 @@ public class LinkedList /** implements List */{
 		}
 		currentNode.setNext(newNode);
 		newNode.setIndex((currentNode.getIndex())+1);
+		return new ReturnObjectImpl (null, ErrorMessage.NO_ERROR, false);
 	}
 
-	public void add(int index, Object item) {
+	public ReturnObject add(int index, Object item) {
+		if (item == null) {
+			return new ReturnObjectImpl (null, ErrorMessage.INVALID_ARGUMENT, true);
+		}
+		addOneToNodeCount();
 		LinkedListNode newNode = new LinkedListNode(item);
 		newNode.setIndex(index);
 		LinkedListNode currentNode = head;
@@ -44,8 +52,29 @@ public class LinkedList /** implements List */{
 			currentNode.getNext().setIndex(currentNode.getIndex()+1);
 			currentNode = currentNode.getNext();
 		}
-
+		return new ReturnObjectImpl (null, ErrorMessage.NO_ERROR, false);
 	}
 
+
+	private static void addOneToNodeCount() {
+		nodeCount++;
+	}
+
+	private static void takeOneFromNodeCount () {
+		nodeCount--;
+	}
+
+	private static int getNodeCount() {
+		return nodeCount;
+	}
+
+	public int size() {
+		return getNodeCount();
+	}
+
+	public boolean isEmpty() {
+		boolean empty = (getNodeCount() == 0)? true : false;
+		return empty;
+	}
 
 }

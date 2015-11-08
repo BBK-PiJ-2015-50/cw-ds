@@ -4,16 +4,11 @@ public class LinkedListNode {
 	private LinkedListNode nextNode;
 	private int index;
 
+
 	public LinkedListNode(Object item) {
 		this.item = item;
 		nextNode = null;
 		index = 0;
-	}
-
-	public LinkedListNode(int index, Object item) {
-		this.item = item;
-		nextNode = null;
-		this.index = index;
 	}
 
 	public LinkedListNode getNext() {
@@ -31,4 +26,11 @@ public class LinkedListNode {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+
+	public Object getContent() {
+		return item;
+	}
+
+
+
 }

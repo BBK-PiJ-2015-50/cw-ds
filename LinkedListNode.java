@@ -1,17 +1,34 @@
 public class LinkedListNode {
+
 	private Object item;
-	private LinkedListNode next;
+	private LinkedListNode nextNode;
+	private int index;
 
 	public LinkedListNode(Object item) {
 		this.item = item;
-		next = null;
+		nextNode = null;
+		index = 0;
+	}
+
+	public LinkedListNode(int index, Object item) {
+		this.item = item;
+		nextNode = null;
+		this.index = index;
 	}
 
 	public LinkedListNode getNext() {
-		return next;
+		return nextNode;
 	}
 
 	public void setNext(LinkedListNode nextNode) {
-		next = nextNode;
+		this.nextNode = nextNode;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 }

@@ -1,120 +1,69 @@
-public class LinkedList implements List {
+public class LinkedList /*implements List*/{
 
-	private LinkedListNode head;
-	private static int nodeCount;
+	private Node head = null;
 
+	/** LinkedList constructor */
 	public LinkedList() {
-		head = new LinkedListNode(null);
-		nodeCount = 0;
+		this.head = null;
 	}
 
+	//public boolean isEmpty();
+
+	public int size() {
+		// PLACEHOLDER RETURN - TO BE REPLACED!!!!!!
+		return 10;
+	}
+
+	//public ReturnObject get(int index);
+
+	public ReturnObject remove(int index) {
+		/** test for trying to retrieve an element from an empty data structure */
+		if (size() == 0) {
+			return new ReturnObjectImpl(ErrorMessage.EMPTY_STRUCTURE);
+		}
+		/** test for trying to retrieve an element with a negative index
+		 * or index greater than or equal to the number of elements
+		 * in a data structure */
+		if (index < 0 || index >= size()) {
+			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+		} 
+		Node currentNode = head;
+		/** if index of element to retrieve is zero, remove head (list start) */
+		if (index == 0) {
+			head = head.getNext();
+			head.setPrevious(null);
+			return new ReturnObjectImpl(currentNode.getContent());
+		}
+		/** move along list until required index is found */
+		while (/** (currentNode != null) && */ (index != currentNode.getIndex())) {
+				currentNode = currentNode.getNext();
+		}
+		/** remove element by setting next/previous pointers of elements either side */
+		currentNode.getPrevious().setNext(currentNode.getNext());
+		if (currentNode.getNext() != null) {
+			currentNode.getNext().setPrevious(currentNode.getPrevious());
+		}
+		return new ReturnObjectImpl(currentNode.getContent());
+	}
+		
+	//public ReturnObject add(int index, Object item);
 
 	public ReturnObject add(Object item) {
 		if (item == null) {
-			return new ReturnObjectImpl(null, ErrorMessage.INVALID_ARGUMENT, true);
+			return new ReturnObjectImpl(ErrorMessage.INVALID_ARGUMENT);
 		}
-		LinkedListNode newNode = new LinkedListNode(item);
-		
-		LinkedListNode currentNode = head;
-		while (currentNode.getNext() != null) {
-			currentNode = currentNode.getNext();
-		}
-		currentNode.setNext(newNode);
-		addOneToNodeCount();
-		newNode.setIndex(getNodeCount()-1);
-		return new ReturnObjectImpl(null, ErrorMessage.NO_ERROR, false);
-	}
-
-	public ReturnObject add(int index, Object item) {
-		if (item == null) {
-			return new ReturnObjectImpl(null, ErrorMessage.INVALID_ARGUMENT, true);
-		}
-		LinkedListNode newNode = new LinkedListNode(item);
-		newNode.setIndex(index);
-		LinkedListNode currentNode = head;
-		
-		for (int i=1; i<=index; i++) {
-			if (currentNode.getNext() == null) {
-				return new ReturnObjectImpl(null, ErrorMessage.INVALID_ARGUMENT, true);
-			}
-			currentNode = currentNode.getNext();
-		}
-		newNode.setNext(currentNode.getNext());
-		currentNode.setNext(newNode);
-		currentNode = newNode;
-		currentNode.setIndex(index);
-		for (int i=index+1;i<=getNodeCount();i++) {
-			currentNode = currentNode.getNext();
-			currentNode.setIndex(i); 
-		}
-		
-		addOneToNodeCount();
-		return new ReturnObjectImpl(null, ErrorMessage.NO_ERROR, false);
-	}
-
-
-	public ReturnObject get(int index) {
-		if (index < 0 || index > size()) {
-			return new ReturnObjectImpl (null, ErrorMessage.INDEX_OUT_OF_BOUNDS, true);
-		}
-		LinkedListNode currentNode = head;
-			for (int i=0;i <= index;i++) {
-				if (currentNode.getNext() == null) {
-					return new ReturnObjectImpl (null, ErrorMessage.INDEX_OUT_OF_BOUNDS, true);
-				}
+		Node newNode = new Node(item);
+		if (this.head == null) {
+			this.head = newNode;
+		} else {
+			Node currentNode = head;
+			while (currentNode.getNext() != null) {
 				currentNode = currentNode.getNext();
 			}
-			return new ReturnObjectImpl(currentNode.getContent(), ErrorMessage.NO_ERROR, false);
+			currentNode.setNext(newNode);
+			newNode.setPrevious(currentNode);
+		}
+		return new ReturnObjectImpl(null);
 	}
-
-
-	public ReturnObject remove(int index) {
-		if (index < 0 || index > size()) {
-			return new ReturnObjectImpl (null, ErrorMessage.INDEX_OUT_OF_BOUNDS, true);
-		}
-		LinkedListNode currentNode = head;
-		for (int i=0;i < index;i++) {
-			if (currentNode.getNext() == null) {
-				return new ReturnObjectImpl (null, ErrorMessage.INDEX_OUT_OF_BOUNDS, true);
-			}
-			currentNode = currentNode.getNext();
-		}
-		currentNode.setNext(currentNode.getNext().getNext());
-		currentNode = currentNode.getNext().getNext();
 		
-		takeOneFromNodeCount();
-		while (currentNode.getNext() != null) {
-
-		}
-		for (int i=index+1;i<(getNodeCount()-1);i++) {
-			currentNode = currentNode.getNext();
-			currentNode.setIndex(i); 
-		}
-		
-		return new ReturnObjectImpl (currentNode.getContent(), ErrorMessage.NO_ERROR, false);
-	}
-
-
-	private static void addOneToNodeCount() {
-		nodeCount++;
-	}
-
-	private static void takeOneFromNodeCount() {
-		nodeCount--;
-	}
-
-	private static int getNodeCount() {
-		return nodeCount;
-	}
-
-	public int size() {
-		return getNodeCount();
-	}
-
-	public boolean isEmpty() {
-		boolean empty = (getNodeCount() == 0)? true : false;
-		return empty;
-	}
-
-
 }

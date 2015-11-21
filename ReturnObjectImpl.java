@@ -1,30 +1,30 @@
 public class ReturnObjectImpl implements ReturnObject {
+	
+	private Object item = null;
+	private ErrorMessage error = ErrorMessage.NO_ERROR;
 
-	private Object returnValue;
-	private ErrorMessage returnError;
-	private boolean hasBeenError;
-
-	ReturnObjectImpl (Object returnValue, ErrorMessage returnError, boolean hasBeenError) {
-		this.returnValue = returnValue;
-		this.returnError = returnError;
-		this.hasBeenError = hasBeenError;
+	/** Constructor for ReturnObjectImpl with no error */
+	public ReturnObjectImpl(Object item) {
+		this.item = item;
 	}
 
-	public Object getReturnValue() {
-		if (hasBeenError) {
-			return null;
-		}
-		return returnValue;
+	/** Constructor for ReturnObjectImpl with error message */
+	public ReturnObjectImpl(ErrorMessage error) {
+		this.error = error;
 	}
 
-	public ErrorMessage getError() {
-		if (!hasBeenError) {
-			return ErrorMessage.NO_ERROR;
-		}
-		return returnError;
-	}
-		
+	/** Return whether there has been a error */
 	public boolean hasError() {
-		return hasBeenError;
+		return (error != ErrorMessage.NO_ERROR);
+	}
+
+	/** Return error message: NO-ERROR if & only if hasError returns false */
+	public ErrorMessage getError() {
+		return (!hasError()) ? ErrorMessage.NO_ERROR : error;
+	}
+
+	/** Return wrapped object or null if there has been an error */
+	public Object getReturnValue() {
+		return (hasError()) ? null : item;
 	}
 }

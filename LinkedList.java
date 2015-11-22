@@ -1,69 +1,110 @@
-public class LinkedList /*implements List*/{
+public class LinkedList {
 
 	private Node head = null;
+	private int numberOfItems = 0;
+	private ReturnObject selectedItem;
 
 	/** LinkedList constructor */
 	public LinkedList() {
 		this.head = null;
 	}
 
-	//public boolean isEmpty();
+	public boolean isEmpty() {
+		return (numberOfItems == 0);
+	}
 
 	public int size() {
-		// PLACEHOLDER RETURN - TO BE REPLACED!!!!!!
-		return 10;
+		return numberOfItems;
 	}
 
-	//public ReturnObject get(int index);
-
-	public ReturnObject remove(int index) {
-		/** test for trying to retrieve an element from an empty data structure */
-		if (size() == 0) {
+	public ReturnObject get(int index) {
+		if (isEmpty()) {
 			return new ReturnObjectImpl(ErrorMessage.EMPTY_STRUCTURE);
 		}
-		/** test for trying to retrieve an element with a negative index
-		 * or index greater than or equal to the number of elements
-		 * in a data structure */
 		if (index < 0 || index >= size()) {
 			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
-		} 
+		}
 		Node currentNode = head;
-		/** if index of element to retrieve is zero, remove head (list start) */
+		for (int i=0; i<index; i++) {
+			currentNode = currentNode.getNext();
+		}
+		return new ReturnObjectImpl(currentNode.getItem());
+	}
+	
+	public ReturnObject remove(int index) {
+		if (isEmpty()) {
+			return new ReturnObjectImpl(ErrorMessage.EMPTY_STRUCTURE);
+		}
+		if (index < 0 || index >= size()) {
+			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+		}
+		/** remove head */
+		Node currentNode = head;
 		if (index == 0) {
+			selectedItem = new ReturnObjectImpl(head.getItem());
 			head = head.getNext();
 			head.setPrevious(null);
-			return new ReturnObjectImpl(currentNode.getContent());
-		}
-		/** move along list until required index is found */
-		while (/** (currentNode != null) && */ (index != currentNode.getIndex())) {
+			numberOfItems--;
+			return selectedItem;
+		} else {
+			/** remove any other element */
+			for (int i=0; i<index; i++) {
+				if (i == index-1) {
+					currentNode.setNext(currentNode.getNext().getNext());
+					/** return if removing end of list */
+					if (i == numberOfItems-2) {
+						numberOfItems--;
+						return new ReturnObjectImpl(currentNode.getNext().getItem());
+					}
+					currentNode.getNext().getNext().setPrevious(currentNode);
+				}
 				currentNode = currentNode.getNext();
+			}
 		}
-		/** remove element by setting next/previous pointers of elements either side */
-		currentNode.getPrevious().setNext(currentNode.getNext());
-		if (currentNode.getNext() != null) {
-			currentNode.getNext().setPrevious(currentNode.getPrevious());
-		}
-		return new ReturnObjectImpl(currentNode.getContent());
+		numberOfItems--;
+		return new ReturnObjectImpl(currentNode.getItem());
 	}
-		
-	//public ReturnObject add(int index, Object item);
 
-	public ReturnObject add(Object item) {
+	public ReturnObject add(int index, Object item) {
+		if (index < 0 || index > size()) {
+			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+		}
 		if (item == null) {
 			return new ReturnObjectImpl(ErrorMessage.INVALID_ARGUMENT);
 		}
 		Node newNode = new Node(item);
-		if (this.head == null) {
-			this.head = newNode;
-		} else {
-			Node currentNode = head;
-			while (currentNode.getNext() != null) {
-				currentNode = currentNode.getNext();
-			}
-			currentNode.setNext(newNode);
-			newNode.setPrevious(currentNode);
+		Node currentNode = head;
+		/** add element to empty list */
+		if (isEmpty()) {
+			head = newNode;
+			numberOfItems++;
+			return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
 		}
-		return new ReturnObjectImpl(null);
+		/** add element to head in a non-empty list */
+		if (index == 0) {
+			currentNode = head;
+			head = newNode;
+			head.setNext(currentNode);
+			currentNode.setPrevious(head);	
+		}
+		/** add elements to other positions */
+		for (int i=0; i<index; i++) {
+			if (i == (index-1)) {
+				newNode.setPrevious(currentNode);
+				newNode.setNext(currentNode.getNext());
+				currentNode.setNext(newNode);
+				if (currentNode.getNext().getNext() != null) {
+					currentNode.getNext().getNext().setPrevious(newNode);
+				}
+			}
+			currentNode = currentNode.getNext();
+		}
+		numberOfItems++;
+		return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
 	}
-		
+
+	public ReturnObject add(Object item) {
+		return add(numberOfItems, item);
+	}
+
 }

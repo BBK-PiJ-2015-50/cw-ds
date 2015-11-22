@@ -12,6 +12,11 @@ public class ReturnObjectImpl implements ReturnObject {
 	public ReturnObjectImpl(ErrorMessage error) {
 		this.error = error;
 	}
+	/** Constructor with item & error supplied */
+	public ReturnObjectImpl(Object item, ErrorMessage error) {
+		this.item = item;
+		this.error = error;
+	}
 
 	/** Return whether there has been a error */
 	public boolean hasError() {

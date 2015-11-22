@@ -1,16 +1,13 @@
 public class ArrayList implements List {
 	
 	private Object[] array;
-
 	private static int INITIAL_ARRAY_SIZE = 5;
-
 	private int numberOfItems = 0;
 
 	public ArrayList() {
 		array = new Object[INITIAL_ARRAY_SIZE];
 		int numberOfItems;
 	}
-
 
 	public boolean isEmpty() {
 		return (numberOfItems == 0) ? true : false;
@@ -21,19 +18,17 @@ public class ArrayList implements List {
 	}
 
 	public ReturnObject get(int index) {
-		ReturnObject check = checkForError(index, size(), isEmpty());
-		if (check.hasError()) {
-			return check;
+		if (isEmpty()) {
+			return new ReturnObjectImpl(ErrorMessage.EMPTY_STRUCTURE);
+		}
+		if (index < 0 || index >= size()) {
+			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
 		}
 		return new ReturnObjectImpl(array[index]);
 	}
 
 	public ReturnObject remove(int index) {
-		ReturnObject check = checkForError(index, size(), isEmpty());
-		if (check.hasError()) {
-			return check;
-		}
-		ReturnObject selectedItem = new ReturnObjectImpl(array[index]);
+		ReturnObject selectedItem = get(index);
 		for (int i=index; i<numberOfItems; i++) {
 			array[i] = array[i+1];
 		}
@@ -43,13 +38,11 @@ public class ArrayList implements List {
 	}
 
 	public ReturnObject add(int index, Object item) {
-		ReturnObject check1 = checkForError(index, size(), isEmpty());
-		if (check1.hasError()) {
-			return check1;
+		if (index < 0 || index > size()) {
+			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
 		}
-		ReturnObject check2 = checkForError(item);
-		if (check2.hasError()) {
-			return check2;
+		if (item == null) {
+			return new ReturnObjectImpl(ErrorMessage.INVALID_ARGUMENT);
 		}
 		if (numberOfItems == array.length - 1) {
 			doubleArraySize();
@@ -64,22 +57,6 @@ public class ArrayList implements List {
 
 	public ReturnObject add(Object item) {
 		return add(numberOfItems, item);
-	}
-
-	private ReturnObject checkForError(int index, int size, boolean empty) {
-		if (index < 0 || index >= size) {
-			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
-		} else if (empty) {
-			return new ReturnObjectImpl(ErrorMessage.EMPTY_STRUCTURE);
-		}
-		return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
-	}
-
-	private ReturnObject checkForError(Object item) {
-		if (item == null) {
-			return new ReturnObjectImpl(ErrorMessage.INVALID_ARGUMENT);
-		}
-		return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
 	}
 
 	public void doubleArraySize() {

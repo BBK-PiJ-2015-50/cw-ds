@@ -1,7 +1,7 @@
 public class StackImpl extends AbstractStack {
 
-	public StackImpl(List stackList) {
-		super(stackList);
+	public StackImpl(List list) {
+		super(list);
 	}
 
 	public boolean isEmpty() {

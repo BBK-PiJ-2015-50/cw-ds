@@ -1,4 +1,4 @@
-public class LinkedList {
+public class LinkedList implements List {
 
 	private Node head = null;
 	private int numberOfItems = 0;
@@ -46,23 +46,31 @@ public class LinkedList {
 			head.setPrevious(null);
 			numberOfItems--;
 			return selectedItem;
-		} else {
-			/** remove any other element */
+		}
+		/** remove end of list */
+		if (index == (size()-1)) {
 			for (int i=0; i<index; i++) {
 				if (i == index-1) {
+					selectedItem = new ReturnObjectImpl(currentNode.getNext());
 					currentNode.setNext(currentNode.getNext().getNext());
-					/** return if removing end of list */
-					if (i == numberOfItems-2) {
-						numberOfItems--;
-						return new ReturnObjectImpl(currentNode.getNext().getItem());
-					}
-					currentNode.getNext().getNext().setPrevious(currentNode);
+					numberOfItems--;
+					return selectedItem;
 				}
 				currentNode = currentNode.getNext();
 			}
 		}
-		numberOfItems--;
-		return new ReturnObjectImpl(currentNode.getItem());
+		/** remove elements from body of list */
+		for (int i=0; i<index; i++) {
+			if (i == index-1) {
+				selectedItem = new ReturnObjectImpl(currentNode.getNext());
+				currentNode.setNext(currentNode.getNext().getNext());
+				currentNode.getNext().getNext().setPrevious(currentNode);
+				numberOfItems--;
+				return selectedItem;
+			}
+			currentNode = currentNode.getNext();
+		}
+		return selectedItem;
 	}
 
 	public ReturnObject add(int index, Object item) {

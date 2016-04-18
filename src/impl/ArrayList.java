@@ -1,16 +1,21 @@
+/**
+ * @author Chris Kimberley
+ *
+ * @see List
+ */
 public class ArrayList implements List {
 	
 	private Object[] array;
-	private static int INITIAL_ARRAY_SIZE = 5;
-	private int numberOfItems = 0;
+	private final static int INITIAL_ARRAY_SIZE = 5;
+	private int numberOfItems;
 
 	public ArrayList() {
 		array = new Object[INITIAL_ARRAY_SIZE];
-		int numberOfItems;
+		numberOfItems = 0;
 	}
 
 	public boolean isEmpty() {
-		return (numberOfItems == 0) ? true : false;
+		return numberOfItems == 0;
 	}
 
 	public int size() {
@@ -29,16 +34,18 @@ public class ArrayList implements List {
 
 	public ReturnObject remove(int index) {
 		ReturnObject selectedItem = get(index);
-		for (int i=index; i<numberOfItems; i++) {
+        ReturnObject testObj = new ReturnObjectImpl("test string");
+        System.out.println(index + " index " + testObj.getReturnValue());
+        for (int i=index; i<numberOfItems; i++) {
 			array[i] = array[i+1];
 		}
-		array[numberOfItems] = null;
+		//array[numberOfItems] = null;
 		numberOfItems--;
 		return selectedItem;
 	}
 
 	public ReturnObject add(int index, Object item) {
-		if (index < 0 || index > size()) {
+		if (index < 0 || index >= size()) {
 			return new ReturnObjectImpl(ErrorMessage.INDEX_OUT_OF_BOUNDS);
 		}
 		if (item == null) {
@@ -51,12 +58,21 @@ public class ArrayList implements List {
 			array[i] = array[i-1];
 		}
 		array[index] = item;
-		numberOfItems++;
+        System.out.println(numberOfItems);
+        numberOfItems++;
 		return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
 	}
 
 	public ReturnObject add(Object item) {
-		return add(numberOfItems, item);
+		if (item == null) {
+			return new ReturnObjectImpl(ErrorMessage.INVALID_ARGUMENT);
+		}
+		if (numberOfItems == array.length - 1) {
+			doubleArraySize();
+		}
+		array[numberOfItems] = item;
+		numberOfItems++;
+		return new ReturnObjectImpl(ErrorMessage.NO_ERROR);
 	}
 
 	public void doubleArraySize() {
